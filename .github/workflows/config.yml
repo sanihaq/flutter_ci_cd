@@ -38,12 +38,14 @@ jobs:
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
       # - run: flutter pub run msix:create
+      - name: 'Tar files'
+        run: tar -cvf flutter_ci_cd_windows.tar ./build/windows/runner/release/
       - uses: actions/upload-artifact@v2
         with:
           name: windows
           path: |
+            flutter_ci_cd_windows.tar
             ./build/windows/runner/release/
-            ./build/windows/runner/release/flutter_ci_cd.msix
           retention-days: 1
   
   # build-mac:
@@ -77,6 +79,5 @@ jobs:
           files: |
             ./artifacts/android/apk/release/app-release.apk
             ./artifacts/android/bundle/release/app-release.aab
-            ./artifacts/windows/runner/release/flutter_ci_cd.msix
+            ./artifacts/windows/flutter_ci_cd_windows.tar
             LICENSE.txt
-            **/*.exe
