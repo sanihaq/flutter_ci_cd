@@ -7,48 +7,71 @@ on:
       - "Release:*"
 
 jobs:
-  build-linux:
+  version:
+    name: Create version number
     runs-on: ubuntu-latest
-
     steps:
-      - uses: actions/checkout@v2
-      - uses: actions/setup-java@v1
-        with:
-          java-version: '12.x'
-      - uses: subosito/flutter-action@v1
-      - run: flutter pub get
-      - run: flutter test
-      - run: flutter build apk
-      - run: flutter build appbundle
-      - uses: actions/upload-artifact@v2
-        with:
-          name: android
-          path: |
-            ./build/app/outputs/apk/release/app-release.apk
-            ./build/app/outputs/bundle/release/app-release.aab
-          retention-days: 1
-      # for later use
-      # - name: build web
-      #   uses: erickzanardo/flutter-gh-pages@v3
+    - uses: actions/checkout@v2
+    - name: Fetch all history for all tags and branches
+      run: |
+        git fetch --prune --depth=10000
+    - name: Install GitVersion
+      uses: gittools/actions/gitversion/setup@v0.9.9
+      with:
+          versionSpec: '5.2.x'
+    - name: Use GitVersion
+      id: gitversion
+      uses: gittools/actions/gitversion/execute@v0.9.9
+    - name: Create version.txt with nuGetVersion
+      run: echo ${{ steps.gitversion.outputs.nuGetVersion  }} > version.txt
+    - name: Upload version.txt
+      uses: actions/upload-artifact@v2
+      with:
+        name: gitversion
+        path: version.txt
 
-  build-windows:
-    runs-on: windows-latest
+  # build-linux:
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
-      - run: flutter config --enable-windows-desktop
-      - run: flutter build windows
-      # - run: flutter pub run msix:create
-      - name: 'Tar files'
-        run: tar -cvf flutter_ci_cd_windows.tar build/windows/runner/release
-      - uses: actions/upload-artifact@v2
-        with:
-          name: windows
-          path: |
-            flutter_ci_cd_windows.tar
-            ./build/windows/runner/release/
-          retention-days: 1
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: actions/setup-java@v1
+  #       with:
+  #         java-version: '12.x'
+  #     - uses: subosito/flutter-action@v1
+  #     - run: flutter pub get
+  #     - run: flutter test
+  #     - run: flutter build apk
+  #     - run: flutter build appbundle
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: android
+  #         path: |
+  #           ./build/app/outputs/apk/release/app-release.apk
+  #           ./build/app/outputs/bundle/release/app-release.aab
+  #         retention-days: 1
+  #     # for later use
+  #     # - name: build web
+  #     #   uses: erickzanardo/flutter-gh-pages@v3
+
+  # build-windows:
+  #   runs-on: windows-latest
+
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: subosito/flutter-action@v1
+  #     - run: flutter config --enable-windows-desktop
+  #     - run: flutter build windows
+  #     # - run: flutter pub run msix:create
+  #     - name: 'Tar files'
+  #       run: tar -cvf flutter_ci_cd_windows.tar build/windows/runner/release
+  #     - uses: actions/upload-artifact@v2
+  #       with:
+  #         name: windows
+  #         path: |
+  #           flutter_ci_cd_windows.tar
+  #           ./build/windows/runner/release/
+  #         retention-days: 1
   
   # build-mac:
   #   runs-on: macos-latest
@@ -59,29 +82,29 @@ jobs:
   #   - run: flutter test
   #   - run: flutter build ios --release --no-codesign
 
-  release:
-    needs: [ build-linux, build-windows ]
-    runs-on: ubuntu-latest
+  # release:
+  #   needs: [ build-linux, build-windows ]
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Bump version and push tag
-        id: bump
-        uses: minddocdev/mou-version-action@v1.0.0
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-      - uses: actions/download-artifact@v2
-        with:
-          path: artifacts
+  #   steps:
+  #     - name: Bump version and push tag
+  #       id: bump
+  #       uses: minddocdev/mou-version-action@v1.0.0
+  #       with:
+  #         token: ${{ secrets.GITHUB_TOKEN }}
+  #     - uses: actions/download-artifact@v2
+  #       with:
+  #         path: artifacts
           
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "${{ steps.bump.outputs.version }}"
-          prerelease: true
-          title: "Development Build"
-          files: |
-            ./artifacts/android/apk/release/app-release.apk
-            ./artifacts/android/bundle/release/app-release.aab
-            ./artifacts/windows/flutter_ci_cd_windows.tar
-            LICENSE.txt
+  #     - name: Release
+  #       uses: "marvinpinto/action-automatic-releases@latest"
+  #       with:
+  #         repo_token: "${{ secrets.GITHUB_TOKEN }}"
+  #         automatic_release_tag: "${{ steps.bump.outputs.version }}"
+  #         prerelease: true
+  #         title: "Development Build"
+  #         files: |
+  #           ./artifacts/android/apk/release/app-release.apk
+  #           ./artifacts/android/bundle/release/app-release.aab
+  #           ./artifacts/windows/flutter_ci_cd_windows.tar
+  #           LICENSE.txt
