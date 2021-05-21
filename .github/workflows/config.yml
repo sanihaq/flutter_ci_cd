@@ -28,7 +28,7 @@ jobs:
           name: gitversion
           path: version.txt
     outputs:
-      v: ${{ steps.gitversion.outputs.version  }}
+      version: ${{ steps.gitversion.outputs.version  }}
 
   # build-linux:
   #   runs-on: ubuntu-latest
