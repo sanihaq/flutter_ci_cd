@@ -52,15 +52,23 @@ jobs:
   #   needs: [ build-windows, build-linux, build-mac ]
   #   runs-on: ubuntu-latest
 
-  #   steps:
-  #     - name: Release
-  #       uses: "marvinpinto/action-automatic-releases@latest"
-  #       with:
-  #         repo_token: "${{ secrets.GITHUB_TOKEN }}"
-  #         automatic_release_tag: "latest"
-  #         prerelease: true
-  #         title: "Development Build"
-  #         files: |
-  #           LICENSE.txt
-  #           /build/app/outputs/apk/release/*.apk
-  #           **/*.exe
+    steps:
+      - uses: actions/download-artifact@v2
+        with:
+          name: android
+          path: artifacts
+          
+      - name: Display structure of downloaded files
+        run: ls -R
+        working-directory: artifacts
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
+          files: |
+            LICENSE.txt
+            /build/app/outputs/apk/release/*.apk
+            **/*.exe
