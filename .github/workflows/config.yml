@@ -22,6 +22,7 @@ jobs:
       version: ${{ steps.gitversion.outputs.version  }}
 
   build-linux:
+    needs: [ get-version ]
     runs-on: ubuntu-latest
 
     steps:
@@ -30,8 +31,8 @@ jobs:
         with:
           java-version: '12.x'
       - uses: subosito/flutter-action@v1
-      - run: flutter pub get
-      - run: flutter test
+      - name: Update version in YAML
+        run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
       - run: flutter build apk
       - run: flutter build appbundle
       - uses: actions/upload-artifact@v2
@@ -46,12 +47,15 @@ jobs:
       #   uses: erickzanardo/flutter-gh-pages@v3
 
   build-windows:
+    needs: [ get-version ]
     runs-on: windows-latest
 
     steps:
       - uses: actions/checkout@v2
       - uses: subosito/flutter-action@v1
       - run: flutter config --enable-windows-desktop
+      - name: Update version in YAML
+        run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
       - run: flutter build windows
       # - run: flutter pub run msix:create
       - name: 'Tar files'
@@ -80,12 +84,6 @@ jobs:
     steps:
       - name: show version
         run: echo "Releasing ${{ needs.get-version.outputs.version }}"
-
-      - name: Tag commit
-        uses: tvdias/github-tagger@v0.0.1
-        with:
-          repo-token: "${{ secrets.GITHUB_TOKEN }}"
-          tag: "${{ needs.get-version.outputs.version }}"
 
       - uses: actions/download-artifact@v2
         with:
