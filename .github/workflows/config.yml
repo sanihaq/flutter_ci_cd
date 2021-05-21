@@ -55,7 +55,6 @@ jobs:
     steps:
       - uses: actions/download-artifact@v2
         with:
-          name: android
           path: artifacts
           
       - name: Display structure of downloaded files
@@ -69,6 +68,7 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
+            ./artifacts/apk/release/app-release.apk
+            ./artifacts/bundle/release/app-release.aab
             LICENSE.txt
-            /build/app/outputs/apk/release/*.apk
             **/*.exe
