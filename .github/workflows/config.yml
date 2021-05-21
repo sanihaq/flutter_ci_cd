@@ -96,4 +96,5 @@ jobs:
           tag: ${{ needs.get-version.outputs.version }}
           commit: ${{ github.sha }}
           prerelease: true
+          allowUpdates: true
           artifacts: artifacts/android/apk/release/app-release.apk,artifacts/android/bundle/release/app-release.aab,artifacts/windows/flutter_ci_cd_windows.tar
