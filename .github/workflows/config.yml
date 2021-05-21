@@ -48,9 +48,9 @@ jobs:
   #   - run: flutter test
   #   - run: flutter build ios --release --no-codesign
 
-  # release:
-  #   needs: [ build-windows, build-linux, build-mac ]
-  #   runs-on: ubuntu-latest
+  release:
+    needs: [ build-linux ]
+    runs-on: ubuntu-latest
 
     steps:
       - uses: actions/download-artifact@v2
