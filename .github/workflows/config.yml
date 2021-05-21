@@ -3,8 +3,6 @@ name: Flutter Actions
 on:
   push:
     branches: [ master ]
-    tags:
-      - "Release:*"
 
 jobs:
   get-version:
@@ -83,18 +81,24 @@ jobs:
       - name: show version
         run: echo "${{ needs.get-version.outputs.version }}"
 
-      - uses: actions/download-artifact@v2
+      - name: Tag commit
+        uses: tvdias/github-tagger@v0.0.1
         with:
-          path: artifacts
+          repo-token: "${{ secrets.GITHUB_TOKEN }}"
+          tag: "${{ needs.get-version.outputs.version }}"
+
+      # - uses: actions/download-artifact@v2
+      #   with:
+      #     path: artifacts
           
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          prerelease: true
-          title: "${{ needs.get-version.outputs.version }}"
-          files: |
-            ./artifacts/android/apk/release/app-release.apk
-            ./artifacts/android/bundle/release/app-release.aab
-            ./artifacts/windows/flutter_ci_cd_windows.tar
-            LICENSE.txt
+      # - name: Release
+      #   uses: "marvinpinto/action-automatic-releases@latest"
+      #   with:
+      #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
+      #     prerelease: true
+      #     title: "${{ needs.get-version.outputs.version }}"
+      #     files: |
+      #       ./artifacts/android/apk/release/app-release.apk
+      #       ./artifacts/android/bundle/release/app-release.aab
+      #       ./artifacts/windows/flutter_ci_cd_windows.tar
+      #       LICENSE.txt
