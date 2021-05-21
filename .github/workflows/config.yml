@@ -18,7 +18,15 @@ jobs:
           fetch-depth: 0                # fetch the whole repo history
 
       - name: Git Version
+        id: gitversion
         uses: codacy/git-version@2.2.0
+      - name: Create version.txt with nuGetVersion
+        run: echo ${{ steps.gitversion.outputs.version  }} > version.txt
+      - name: Upload version.txt
+        uses: actions/upload-artifact@v2
+        with:
+          name: gitversion
+          path: version.txt
 
   # build-linux:
   #   runs-on: ubuntu-latest
