@@ -28,14 +28,14 @@ jobs:
       # - name: build web
       #   uses: erickzanardo/flutter-gh-pages@v3
 
-  build-windows:
-    runs-on: windows-latest
+  # build-windows:
+  #   runs-on: windows-latest
 
-    steps:
-      - uses: actions/checkout@v2
-      - uses: subosito/flutter-action@v1
-      - run: flutter config --enable-windows-desktop
-      - run: flutter build windows
+  #   steps:
+  #     - uses: actions/checkout@v2
+  #     - uses: subosito/flutter-action@v1
+  #     - run: flutter config --enable-windows-desktop
+  #     - run: flutter build windows
   
   # build-mac:
   #   runs-on: macos-latest
@@ -46,19 +46,19 @@ jobs:
   #   - run: flutter test
   #   - run: flutter build ios --release --no-codesign
 
-  release:
-    needs: [ build-windows, build-linux, build-mac ]
-    runs-on: ubuntu-latest
+  # release:
+  #   needs: [ build-windows, build-linux, build-mac ]
+  #   runs-on: ubuntu-latest
 
-    steps:
-      - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
-        with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
-          automatic_release_tag: "latest"
-          prerelease: true
-          title: "Development Build"
-          files: |
-            LICENSE.txt
-            /build/app/outputs/apk/release/*.apk
-            **/*.exe
+  #   steps:
+  #     - name: Release
+  #       uses: "marvinpinto/action-automatic-releases@latest"
+  #       with:
+  #         repo_token: "${{ secrets.GITHUB_TOKEN }}"
+  #         automatic_release_tag: "latest"
+  #         prerelease: true
+  #         title: "Development Build"
+  #         files: |
+  #           LICENSE.txt
+  #           /build/app/outputs/apk/release/*.apk
+  #           **/*.exe
