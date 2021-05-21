@@ -20,13 +20,6 @@ jobs:
       - name: Git Version
         id: gitversion
         uses: codacy/git-version@2.2.0
-      - name: Create version.txt with nuGetVersion
-        run: echo ${{ steps.gitversion.outputs.version  }} > version.txt
-      - name: Upload version.txt
-        uses: actions/upload-artifact@v2
-        with:
-          name: gitversion
-          path: version.txt
     outputs:
       version: ${{ steps.gitversion.outputs.version  }}
 
@@ -90,19 +83,18 @@ jobs:
       - name: show version
         run: echo "${{ needs.get-version.outputs.version }}"
 
-      # - uses: actions/download-artifact@v2
-      #   with:
-      #     path: artifacts
+      - uses: actions/download-artifact@v2
+        with:
+          path: artifacts
           
-      # - name: Release
-      #   uses: "marvinpinto/action-automatic-releases@latest"
-      #   with:
-      #     repo_token: "${{ secrets.GITHUB_TOKEN }}"
-      #     automatic_release_tag: "${{ steps.bump.outputs.version }}"
-      #     prerelease: true
-      #     title: "Development Build"
-      #     files: |
-      #       ./artifacts/android/apk/release/app-release.apk
-      #       ./artifacts/android/bundle/release/app-release.aab
-      #       ./artifacts/windows/flutter_ci_cd_windows.tar
-      #       LICENSE.txt
+      - name: Release
+        uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          prerelease: true
+          title: "${{ needs.get-version.outputs.version }}"
+          files: |
+            ./artifacts/android/apk/release/app-release.apk
+            ./artifacts/android/bundle/release/app-release.aab
+            ./artifacts/windows/flutter_ci_cd_windows.tar
+            LICENSE.txt
