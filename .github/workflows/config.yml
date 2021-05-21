@@ -39,7 +39,7 @@ jobs:
       - run: flutter build windows
       # - run: flutter pub run msix:create
       - name: 'Tar files'
-        run: tar -cvf flutter_ci_cd_windows.tar ./build/windows/runner/release/
+        run: tar -cvf flutter_ci_cd_windows.tar build/windows/runner/release
       - uses: actions/upload-artifact@v2
         with:
           name: windows
