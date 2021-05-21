@@ -85,9 +85,9 @@ jobs:
       - name: show version
         run: echo "Releasing ${{ needs.get-version.outputs.version }}"
 
-      # - uses: actions/download-artifact@v2
-      #   with:
-      #     path: artifacts
+      - uses: actions/download-artifact@v2
+        with:
+          path: artifacts
           
       - name: Release
         uses: ncipollo/release-action@v1
@@ -97,6 +97,6 @@ jobs:
           commit: ${{ github.sha }}
           prerelease: true
           artifacts: |
-            ./android/apk/release/app-release.apk
-            ./android/bundle/release/app-release.aab
-            ./windows/flutter_ci_cd_windows.tar
+            .artifacts/android/apk/release/app-release.apk
+            .artifacts/android/bundle/release/app-release.aab
+            .artifacts/windows/flutter_ci_cd_windows.tar
