@@ -19,9 +19,12 @@ jobs:
       - run: flutter build apk
       - run: flutter build appbundle
       - name: Release
-        uses: softprops/action-gh-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - uses: "marvinpinto/action-automatic-releases@latest"
+        with:
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
+          prerelease: true
+          title: "Development Build"
       # for later use
       # - name: build web
       #   uses: erickzanardo/flutter-gh-pages@v3
