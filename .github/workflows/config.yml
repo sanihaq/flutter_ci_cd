@@ -85,18 +85,18 @@ jobs:
       - name: show version
         run: echo "Releasing ${{ needs.get-version.outputs.version }}"
 
-      - uses: actions/download-artifact@v2
-        with:
-          path: artifacts
+      # - uses: actions/download-artifact@v2
+      #   with:
+      #     path: artifacts
           
       - name: Release
-        uses: "marvinpinto/action-automatic-releases@latest"
+        uses: ncipollo/release-action@v1
         with:
-          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          token: ${{ secrets.GH_TOKEN }}
+          tag: ${{ needs.get-version.outputs.version }}
+          commit: ${{ github.sha }}
           prerelease: true
-          automatic_release_tag: "latest"
-          files: |
-            ./artifacts/android/apk/release/app-release.apk
-            ./artifacts/android/bundle/release/app-release.aab
-            ./artifacts/windows/flutter_ci_cd_windows.tar
-            LICENSE.txt
+          artifacts: |
+            ./android/apk/release/app-release.apk
+            ./android/bundle/release/app-release.aab
+            ./windows/flutter_ci_cd_windows.tar
