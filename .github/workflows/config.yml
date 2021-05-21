@@ -68,7 +68,7 @@ jobs:
           prerelease: true
           title: "Development Build"
           files: |
-            ./artifacts/apk/release/app-release.apk
-            ./artifacts/bundle/release/app-release.aab
+            ./artifacts/android/apk/release/app-release.apk
+            ./artifacts/android/bundle/release/app-release.aab
             LICENSE.txt
             **/*.exe
