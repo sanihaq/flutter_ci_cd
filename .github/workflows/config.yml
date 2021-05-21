@@ -18,7 +18,7 @@ jobs:
       - run: flutter test
       - run: flutter build apk
       - run: flutter build appbundle
-      run: ls -R
+      - run: ls -R
       - uses: actions/upload-artifact@v2
         with:
           name: android
