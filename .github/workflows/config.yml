@@ -18,6 +18,7 @@ jobs:
       - run: flutter test
       - run: flutter build apk
       - run: flutter build appbundle
+      run: ls -R
       - uses: actions/upload-artifact@v2
         with:
           name: android
@@ -36,14 +37,14 @@ jobs:
       - run: flutter config --enable-windows-desktop
       - run: flutter build windows
   
-  build-mac:
-    runs-on: macos-latest
-    steps:
-    - uses: actions/checkout@v2
-    - uses: subosito/flutter-action@v1
-    - run: flutter pub get
-    - run: flutter test
-    - run: flutter build ios --release --no-codesign
+  # build-mac:
+  #   runs-on: macos-latest
+  #   steps:
+  #   - uses: actions/checkout@v2
+  #   - uses: subosito/flutter-action@v1
+  #   - run: flutter pub get
+  #   - run: flutter test
+  #   - run: flutter build ios --release --no-codesign
 
   release:
     needs: [ build-windows, build-linux, build-mac ]
