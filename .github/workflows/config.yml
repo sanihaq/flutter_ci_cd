@@ -34,53 +34,54 @@ jobs:
         uses: codacy/git-version@2.2.0
     outputs:
       version: ${{ steps.gitversion.outputs.version  }}
+      release-name: ${{ github.event.repository.name }}_v-${{ needs.get-version.outputs.version }}+${{ github.run_number }}
 
-  # build-linux:
-  #   needs: [ get-version ]
-  #   runs-on: ubuntu-latest
+  build-linux:
+    needs: [ get-version ]
+    runs-on: ubuntu-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: actions/setup-java@v1
-  #       with:
-  #         java-version: '12.x'
-  #     - uses: subosito/flutter-action@v1
-  #     - name: Update version in YAML
-  #       run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
-  #     - run: flutter build apk
-  #     - run: flutter build appbundle
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         name: android
-  #         path: |
-  #           ./build/app/outputs/apk/release/app-release.apk
-  #           ./build/app/outputs/bundle/release/app-release.aab
-  #         retention-days: 1
-      # for later use
-      # - name: build web
-      #   uses: erickzanardo/flutter-gh-pages@v3
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-java@v1
+        with:
+          java-version: '12.x'
+      - uses: subosito/flutter-action@v1
+      - name: Update version in YAML
+        run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
+      - run: flutter build apk
+      - run: flutter build appbundle
+      - uses: actions/upload-artifact@v2
+        with:
+          name: android
+          path: |
+            ./build/app/outputs/apk/release/app-release.apk
+            ./build/app/outputs/bundle/release/app-release.aab
+          retention-days: 1
+      for later use
+      - name: build web
+        uses: erickzanardo/flutter-gh-pages@v3
 
-  # build-windows:
-  #   needs: [ get-version ]
-  #   runs-on: windows-latest
+  build-windows:
+    needs: [ get-version ]
+    runs-on: windows-latest
 
-  #   steps:
-  #     - uses: actions/checkout@v2
-  #     - uses: subosito/flutter-action@v1
-  #     - run: flutter config --enable-windows-desktop
-  #     - name: Update version in YAML
-  #       run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
-  #     - run: flutter build windows
-  #     # - run: flutter pub run msix:create
-  #     - name: 'Tar files'
-  #       run: tar -cvf flutter_ci_cd_windows.tar build/windows/runner/release
-  #     - uses: actions/upload-artifact@v2
-  #       with:
-  #         name: windows
-  #         path: |
-  #           flutter_ci_cd_windows.tar
-  #           ./build/windows/runner/release/
-  #         retention-days: 1
+    steps:
+      - uses: actions/checkout@v2
+      - uses: subosito/flutter-action@v1
+      - run: flutter config --enable-windows-desktop
+      - name: Update version in YAML
+        run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
+      - run: flutter build windows
+      # - run: flutter pub run msix:create
+      - name: 'Tar files'
+        run: tar -cvf ${{ needs.get-version.outputs.release-name }}.tar build/windows/runner/release
+      - uses: actions/upload-artifact@v2
+        with:
+          name: windows
+          path: |
+            ${{ needs.get-version.outputs.release-name }}.tar
+            ./build/windows/runner/release/
+          retention-days: 1
   
   # build-mac:
   #   runs-on: macos-latest
@@ -125,6 +126,10 @@ jobs:
             ## ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
             ${{ steps.change.outputs.changelog }}
           write-mode: append
+
+      - name: Rename files
+      - run: mv artifacts/android/apk/release/app-release.apk artifacts/android/apk/release/${{ needs.get-version.outputs.release-name }}.apk
+      - run: mv artifacts/android/bundle/release/app-release.aab artifacts/android/bundle/release/${{ needs.get-version.outputs.release-name }}.aab
       
       - name: Release
         uses: ncipollo/release-action@v1
@@ -134,7 +139,7 @@ jobs:
           commit: ${{ github.sha }}
           body: ${{ steps.change.outputs.changelog }}
           prerelease: true
-          # artifacts: artifacts/android/apk/release/app-release.apk,artifacts/android/bundle/release/app-release.aab,artifacts/windows/flutter_ci_cd_windows.tar
+          artifacts: artifacts/android/apk/release/${{ needs.get-version.outputs.release-name }}.apk,artifacts/android/bundle/release/${{ needs.get-version.outputs.release-name }}.aab,artifacts/windows/${{ needs.get-version.outputs.release-name }}.tar
 
       - uses: stefanzweifel/git-auto-commit-action@v4.11.0
         with:
