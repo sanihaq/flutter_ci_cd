@@ -34,7 +34,7 @@ jobs:
         uses: codacy/git-version@2.2.0
     outputs:
       version: ${{ steps.gitversion.outputs.version  }}
-      release-name: ${{ github.event.repository.name }}_v-${{ needs.get-version.outputs.version }}+${{ github.run_number }}
+      release-name: ${{ github.event.repository.name }}_${{ steps.gitversion.outputs.version }}+${{ github.run_number }}
 
   build-linux:
     needs: [ get-version ]
