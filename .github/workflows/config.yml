@@ -82,28 +82,38 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: show version
-        run: echo "Releasing ${{ needs.get-version.outputs.version }}"
+      - uses: actions/checkout@v2
+
+      - name: Show version
+        run: echo "Releasing ${{ needs.get-version.outputs.version }}+${{ github.run_number }}"
+      
+      - name: Update version in YAML
+        run: sed -i 's/0.0.0+0/${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
 
       - uses: actions/download-artifact@v2
         with:
           path: artifacts
 
-      - uses: ardalanamini/auto-changelog@v1.1.0
+      - name: Generate Changelog
+        uses: ardalanamini/auto-changelog@v1.1.0
         id: change
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           exclude: 'perf,other,breaking'
-      
-      - name: show version
-        run: echo "Changelog ${{ steps.change.outputs.changelog }}"
 
+      - name: Create or update changelog.md
+        run: echo ${{ steps.change.outputs.changelog }} > changelog.md
+      
       - name: Release
         uses: ncipollo/release-action@v1
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          tag: ${{ needs.get-version.outputs.version }}
+          tag: ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
           commit: ${{ github.sha }}
           body: ${{ steps.change.outputs.changelog }}
           prerelease: true
           # artifacts: artifacts/android/apk/release/app-release.apk,artifacts/android/bundle/release/app-release.aab,artifacts/windows/flutter_ci_cd_windows.tar
+
+      - uses: stefanzweifel/git-auto-commit-action@v4.11.0
+        with:
+          commit_message: Released ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
