@@ -122,7 +122,7 @@ jobs:
           path: changelog.md
           contents: |
             \n
-            ## version: ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
+            ## ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
             ${{ steps.change.outputs.changelog }}
           write-mode: append
       
