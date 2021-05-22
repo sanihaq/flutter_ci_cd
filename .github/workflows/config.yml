@@ -78,7 +78,7 @@ jobs:
   #   - run: flutter build ios --release --no-codesign
 
   release:
-    needs: [ get-version, build-linux, build-windows ]
+    needs: [ get-version ]
     runs-on: ubuntu-latest
 
     steps:
