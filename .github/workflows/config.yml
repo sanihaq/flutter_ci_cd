@@ -88,7 +88,8 @@ jobs:
         run: echo "Releasing ${{ needs.get-version.outputs.version }}+${{ github.run_number }}"
       
       - name: Update version in YAML
-        run: sed -i 's/^version: .*$/version: ${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
+        run: >
+          sed -i 's/^version: .*$/version: ${{ needs.get-version.outputs.version }}+${{ github.run_number }}/g' pubspec.yaml
 
       - uses: actions/download-artifact@v2
         with:
