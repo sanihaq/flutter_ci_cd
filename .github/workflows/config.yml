@@ -89,9 +89,15 @@ jobs:
         with:
           path: artifacts
 
-      - name: Changelog CI
-        uses: saadmk11/changelog-ci@v0.8.0
-          
+      - uses: ardalanamini/auto-changelog@v1.1.0
+        id: change
+        with:
+        token: ${{ secrets.GITHUB_TOKEN }}
+        exclude: 'perf,other,breaking'
+      
+      - name: show version
+        run: echo "Releasing ${{ steps.chage.outputs.changelog }}"
+
       - name: Release
         uses: ncipollo/release-action@v1
         with:
