@@ -96,7 +96,7 @@ jobs:
           exclude: 'perf,other,breaking'
       
       - name: show version
-        run: echo "Releasing ${{ steps.chage.outputs.changelog }}"
+        run: echo "Changelog ${{ steps.change.outputs.changelog }}"
 
       - name: Release
         uses: ncipollo/release-action@v1
@@ -104,5 +104,6 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           tag: ${{ needs.get-version.outputs.version }}
           commit: ${{ github.sha }}
+          body: ${{ steps.change.outputs.changelog }}
           prerelease: true
           # artifacts: artifacts/android/apk/release/app-release.apk,artifacts/android/bundle/release/app-release.aab,artifacts/windows/flutter_ci_cd_windows.tar
