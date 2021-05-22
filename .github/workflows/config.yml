@@ -92,8 +92,8 @@ jobs:
       - uses: ardalanamini/auto-changelog@v1.1.0
         id: change
         with:
-        token: ${{ secrets.GITHUB_TOKEN }}
-        exclude: 'perf,other,breaking'
+          token: ${{ secrets.GITHUB_TOKEN }}
+          exclude: 'perf,other,breaking'
       
       - name: show version
         run: echo "Releasing ${{ steps.chage.outputs.changelog }}"
