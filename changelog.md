@@ -9,4 +9,5 @@ echo ### New Features
 ### Bug Fixes
 
 * write version to pubspec fix ([b8b8c1ee](https://github.com/sanihaq/flutter_ci_cd/commit/b8b8c1ee8d076ad8793e6705a120b9ed700c14a5))
-* write version to pubspec ([b5e2c485](https://github.com/sanihaq/flutter_ci_cd/commit/b5e2c48534f178aaa45e1b1944e044fbb3784219))
+* write version to pubspec ([b5e2c485](https://github.com/sanihaq/flutter_ci_cd/commit/b5e2c48534f178aaa45e1b1944e044fbb3784219))\n
+## v0.0.8+53
