@@ -106,7 +106,8 @@ jobs:
         with:
           path: changelog.md
           contents: |
-            echo ${{ steps.change.outputs.changelog }}
+            ## ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
+            ${{ steps.change.outputs.changelog }}
           write-mode: append
       
       - name: Release
@@ -121,4 +122,4 @@ jobs:
 
       - uses: stefanzweifel/git-auto-commit-action@v4.11.0
         with:
-          commit_message: Released ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
+          commit_message: Auto Released ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
