@@ -108,7 +108,7 @@ jobs:
           path: changelog.md
           contents: |
             \n
-            ## ${{ needs.get-version.outputs.version }}+${{ github.run_number }}
+            ## v${{ needs.get-version.outputs.version }}+${{ github.run_number }}
             ${{ steps.change.outputs.changelog }}
           write-mode: append
       
