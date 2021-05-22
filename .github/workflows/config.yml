@@ -127,9 +127,8 @@ jobs:
             ${{ steps.change.outputs.changelog }}
           write-mode: append
 
-      - name: Rename files
-        run: mv artifacts/android/apk/release/app-release.apk artifacts/android/apk/release/${{ needs.get-version.outputs.release-name }}.apk
-        run: mv artifacts/android/bundle/release/app-release.aab artifacts/android/bundle/release/${{ needs.get-version.outputs.release-name }}.aab
+      - run: mv artifacts/android/apk/release/app-release.apk artifacts/android/apk/release/${{ needs.get-version.outputs.release-name }}.apk
+      - run: mv artifacts/android/bundle/release/app-release.aab artifacts/android/bundle/release/${{ needs.get-version.outputs.release-name }}.aab
       
       - name: Release
         uses: ncipollo/release-action@v1
