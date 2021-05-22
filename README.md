@@ -1,3 +1,5 @@
+<!-- git fetch --tags -f -->
+
 # flutter_ci_cd
 
 A new Flutter project.
